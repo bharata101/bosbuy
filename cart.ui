@@ -170,26 +170,6 @@
      <string>Remove from Cart</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_8">
-    <property name="geometry">
-     <rect>
-      <x>50</x>
-      <y>20</y>
-      <width>91</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Cart</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="qtyCart">
     <property name="geometry">
      <rect>
@@ -225,6 +205,26 @@
      <string>Add to Payment</string>
     </property>
    </widget>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>20</y>
+     <width>91</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Cart</string>
+   </property>
   </widget>
  </widget>
  <resources/>

@@ -44,26 +44,6 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_7">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>20</y>
-      <width>91</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Wishlist</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="removeFromWishlist">
     <property name="geometry">
      <rect>
@@ -134,6 +114,26 @@
      <string>Qty: 1</string>
     </property>
    </widget>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>20</y>
+     <width>91</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Wishlist</string>
+   </property>
   </widget>
  </widget>
  <resources/>
