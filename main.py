@@ -275,16 +275,32 @@ class ProductDetail(QDialog):
         cursor.execute(idUserQuery)
         idUser = cursor.fetchone()
 
+        cursor.execute(f"SELECT * FROM tbl_wishlist WHERE nama_barang ='{namaProduk}'")
+        result = cursor.fetchall()
+        produk_ID = -999
+        for id_user, id_product, nama_barang, quantity, harga_total in result:
+            produk_ID = id_product
+
+        print(f"pembanding {produk_ID}")
+        print(f"insert {idProduk}")
+
         query = f"SELECT COUNT(id_user) FROM tbl_wishlist WHERE id_user = '{idUser[0]}'"
         cursor.execute(query)
         result = cursor.fetchone()
+        print(f"jumlah baris {result[0]}")
 
         if (result[0] == 0):
             query = f"INSERT INTO tbl_wishlist(id_user, id_product, nama_barang, quantity, harga_total) VALUES ('{idUser[0]}','{idProduk}','{nama_produk}',{quantity},{total_price})"
             cursor.execute(query)
         else:
-            query = f"UPDATE tbl_wishlist SET quantity = quantity + {int(quantity)}, harga_total = harga_total + {total_price}"
-            cursor.execute(query)
+            if (produk_ID == idProduk):
+                query = f"UPDATE tbl_wishlist SET quantity = quantity + {int(quantity)}, harga_total = harga_total + {total_price} WHERE id_product = '{idProduk}'"
+                cursor.execute(query)
+                db.commit()
+            else:
+                query = f"INSERT INTO tbl_wishlist(id_user, id_product, nama_barang, quantity, harga_total) VALUES ('{idUser[0]}','{idProduk}','{nama_produk}',{quantity},{total_price})"
+                cursor.execute(query)
+                db.commit()
 
         query = f"UPDATE product SET stock = stock - {int(quantity)} WHERE idProduct = '{idProduk}'"
         cursor.execute(query)
@@ -315,17 +331,28 @@ class ProductDetail(QDialog):
         cursor.execute(idUserQuery)
         idUser = cursor.fetchone()
 
+        cursor.execute(f"SELECT * FROM tbl_cart WHERE nama_barang ='{namaProduk}'")
+        result = cursor.fetchall()
+        produk_ID = -999
+        for id_user, id_product, nama_barang, quantity, harga_total in result:
+            produk_ID = id_product
+
         query = f"SELECT COUNT(id_user) FROM tbl_cart WHERE id_user = '{idUser[0]}'"
         cursor.execute(query)
         result = cursor.fetchone()
-
 
         if (result[0] == 0):
             query = f"INSERT INTO tbl_cart(id_user, id_product, nama_barang, quantity, harga_total) VALUES ('{idUser[0]}','{idProduk}','{nama_produk}',{quantity},{total_price})"
             cursor.execute(query)
         else:
-            query = f"UPDATE  tbl_cart SET quantity = quantity + {int(quantity)}, harga_total = harga_total + {total_price}"
-            cursor.execute(query)
+            if (produk_ID == idProduk):
+                query = f"UPDATE tbl_cart SET quantity = quantity + {int(quantity)}, harga_total = harga_total + {total_price} WHERE id_product = '{idProduk}'"
+                cursor.execute(query)
+                db.commit()
+            else:
+                query = f"INSERT INTO tbl_cart(id_user, id_product, nama_barang, quantity, harga_total) VALUES ('{idUser[0]}','{idProduk}','{nama_produk}',{quantity},{total_price})"
+                cursor.execute(query)
+                db.commit()
 
         query = f"UPDATE product SET stock = stock - {int(quantity)} WHERE idProduct = '{idProduk}'"
         cursor.execute(query)
@@ -352,10 +379,6 @@ class Wishlist(QDialog):
     def connect(self):
         db = con.connect(host='localhost', user='root', password='', db='users')
         cursor = db.cursor()
-        # nanti perlu sesuaiin id_user dengan id_user yang login
-        # cursor.execute("SELECT * FROM tbl_wishlist")
-        # result = cursor.fetchall()
-        # self.tabelWishlist.setRowCount(0)
 
         # nanti perlu sesuaiin id_user dengan id_user yang login
         idUserQuery = f"SELECT customer_id FROM customer WHERE login_status='True'"
@@ -373,37 +396,50 @@ class Wishlist(QDialog):
         db.close()
 
     def addProductToCart(self):
+        namaProduk = product_detail.productName.text()
         db = con.connect(host='localhost', user='root', password='', db='users')
         cursor = db.cursor()
 
         idUserQuery = f"SELECT customer_id FROM customer WHERE login_status='True'"
         cursor.execute(idUserQuery)
         idUser = cursor.fetchone()
-        # print(idUser[0])
-
-        query = f"SELECT COUNT(id_user) FROM tbl_cart WHERE id_user = '{idUser[0]}'"
-        cursor.execute(query)
-        jumlahID = cursor.fetchone()
-
+        
         query = f"SELECT * FROM tbl_wishlist WHERE id_user= '{idUser[0]}'"
         cursor.execute(query)
         dataWishlist = cursor.fetchall()
-        print(dataWishlist)
+        print(f"{dataWishlist}")
 
-        if (jumlahID[0] == 0):
-            for row in dataWishlist:
-                query = f"INSERT INTO tbl_cart(id_user, id_product, nama_barang, quantity, harga_total) VALUES ('{idUser[0]}','{row[1]}','{row[2]}',{row[3]},{row[4]})"
+        idUserQuery = f"SELECT customer_id FROM customer WHERE login_status='True'"
+        cursor.execute(idUserQuery)
+        idUser = cursor.fetchone()
+
+        cursor.execute(f"SELECT * FROM tbl_cart WHERE nama_barang ='{namaProduk}'")
+        result = cursor.fetchall()
+        produk_ID = -999
+        for id_user, id_product, nama_barang, quantity, harga_total in result:
+            produk_ID = id_product
+
+        query = f"SELECT COUNT(id_user) FROM tbl_cart WHERE id_user = '{idUser[0]}'"
+        cursor.execute(query)
+        result = cursor.fetchone()
+
+        if (result[0] == 0):
+            for row_number, data in enumerate(dataWishlist):
+                query = f"INSERT INTO tbl_cart(id_user, id_product, nama_barang, quantity, harga_total) VALUES ('{data[0]}','{data[1]}','{data[2]}',{data[3]},{data[4]})"
                 cursor.execute(query)
         else:
-            for row in dataWishlist:
-                query = f"UPDATE  tbl_cart SET quantity = quantity + {int(row[3])}, harga_total = harga_total + {row[4]}"
-                cursor.execute(query)
-        db.commit()
+            for row_number, data in enumerate(dataWishlist):
+                if (produk_ID == data[1]):
+                    query = f"UPDATE tbl_cart SET quantity = quantity + {int(data[3])}, harga_total = harga_total + {data[4]} WHERE id_product = '{data[1]}'"
+                    cursor.execute(query)
+                    db.commit()
+                else:
+                    query = f"INSERT INTO tbl_cart(id_user, id_product, nama_barang, quantity, harga_total) VALUES ('{data[0]}','{data[1]}','{data[2]}',{data[3]},{data[4]})"
+                    cursor.execute(query)
+                    db.commit()
+
         cart.connect()
         widget.setCurrentIndex(7)
-
-    # def show_payment(self):
-    #     widget.setCurrentIndex(7)
 
 class Cart(QDialog):
     def __init__(self):
@@ -452,7 +488,7 @@ class payment_form(QDialog):
         idUser_active = str(result[0])
         print(f"id user active {idUser_active}")
 
-        cursor.execute(f"SELECT harga_total FROM tbl_cart WHERE id_user = '{idUser_active}'")
+        cursor.execute(f"SELECT SUM(harga_total) FROM tbl_cart WHERE id_user = '{idUser_active}'")
         
         paid = cursor.fetchall()
         print(f"result {paid[0][0]}")
@@ -467,19 +503,11 @@ class payment_form(QDialog):
         result = cursor.fetchone() #buat check colect data, kalau gaada data disini, berarti username dan password tidak valid
         # print(result)
         idUser_active = str(result[0])
-        # print(f"id user active {idUser_active}")
-
-        # cursor.execute(f"SELECT harga_total FROM tbl_cart WHERE id_user = '{idUser_active}'")
-        
-        # paid = cursor.fetchall()
-        # print(f"result {paid[0][0]}")
-        # textLabelHarga = str(paid[0][0])
-        
-        # self.labelTotalHarga.setText(textLabelHarga)
 
         if result:
-            cursor.execute(f"SELECT harga_total FROM tbl_cart WHERE id_user = '{idUser_active}'")
+            cursor.execute(f"SELECT SUM(harga_total) FROM tbl_cart WHERE id_user = '{idUser_active}'")
             result2 = cursor.fetchall()
+
             cursor.execute(f"UPDATE customer SET amount = amount - {result2[0][0]} WHERE customer_id={idUser_active}")
             db.commit()
             widget.setCurrentIndex(9)
