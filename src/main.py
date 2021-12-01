@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QDialog, QApplication, QMessageBox, QWidget
 from PyQt5.uic import loadUi
 import mysql.connector as con
 from uuid import uuid4
-import img.logo as logo
+import logo as logo
 
 class Login_Form(QDialog):
     def __init__(self):
