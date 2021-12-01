@@ -1,1 +1,0 @@
-print('hello world - ini adalah feature galuh')
