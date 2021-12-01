@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="image">
+    <file>bosbuy.png</file>
+  </qresource>
+</RCC>
