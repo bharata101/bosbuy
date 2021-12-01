@@ -104,11 +104,42 @@ class Wishlist(QDialog):
     def __init__(self):
         super(Wishlist, self).__init__()
         loadUi('wishlist.ui', self)
+        self.connect()
+
+    def connect(self):
+        db = con.connect(host='localhost', user='root', password='', db='db_bosbuy')
+        cursor = db.cursor()
+        # nanti perlu sesuaiin id_user dengan id_user yang login
+        cursor.execute("SELECT * FROM tbl_wishlist")
+        result = cursor.fetchall()
+        self.tabelWishlist.setRowCount(0)
+
+        for row_number, row_data in enumerate(result):
+            self.tabelWishlist.setRowCount(row_number+1)
+            for column_number, data in enumerate(row_data):
+                self.tabelWishlist.setItem(row_number, column_number, QtWidgets.QTableWidgetItem(str(data)))
+        db.close()
 
 class Cart(QDialog):
     def __init__(self):
         super(Cart, self).__init__()
         loadUi('cart.ui', self)
+        self.connect()
+
+    def connect(self):
+        db = con.connect(host='localhost', user='root', password='', db='db_bosbuy')
+        cursor = db.cursor()
+        # nanti perlu sesuaiin id_user dengan id_user yang login
+        cursor.execute("SELECT * FROM tbl_cart")
+        result = cursor.fetchall()
+        self.tabelCart.setRowCount(0)
+
+        for row_number, row_data in enumerate(result):
+            self.tabelCart.setRowCount(row_number+1)
+            for column_number, data in enumerate(row_data):
+                self.tabelCart.setItem(row_number, column_number, QtWidgets.QTableWidgetItem(str(data)))
+        db.close()
+
 
 app = QApplication(sys.argv)
 widget = QtWidgets.QStackedWidget()
@@ -119,7 +150,7 @@ widget.addWidget(productDetail)
 widget.addWidget(wishlist)
 widget.addWidget(cart)
 widget.setCurrentIndex(0)
-widget.setFixedWidth(720)
+widget.setFixedWidth(1600)
 widget.setFixedHeight(900)
 widget.show()
 
